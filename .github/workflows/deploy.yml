@@ -21,3 +21,26 @@ jobs:
         run: |
           echo "Hellow"
           echo "World"
+
+      - name: EC2 접속
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }} # → 13.124.215.243
+          username: ${{ secrets.EC2_USERNAME }} # → ubuntu
+          key: ${{ secrets.EC2_KEY }} # → pem 내용
+
+          script: | # 실제 코드 수정하는 부분
+            cd ~/board-app-github-actions-v1
+            docker compose pull
+            docker compose up -d
+            docker image prune -f
+
+#######################################################
+##########  이건 보험임. 일단 안해도 됨 #############
+#script: |    # 실제 코드 수정하는 부분
+#cd ~/board-app-github-actions-v1
+#git pull origin main
+#docker compose down
+#docker compose build --no-cache
+#docker compose up -d
+#docker image prune -f
